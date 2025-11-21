@@ -1,22 +1,48 @@
-# app/models.py
 from typing import Optional
-from sqlmodel import Field, SQLModel, create_engine
+from sqlmodel import Field, SQLModel
+# Importar datetime é essencial para o timestamp
 from datetime import datetime
 
-# 1. Definição do Schema da Tabela (como ela é no banco)
+# Define o schema da tabela no PostgreSQL
 class ProcessEvent(SQLModel, table=True):
-    # O nome da tabela no PostgreSQL será 'processevent'
+    # ID DINÂMICO: O banco de dados (PostgreSQL) cria o ID sequencialmente
     id: Optional[int] = Field(default=None, primary_key=True)
     
-    # Dados que você quer receber
-    case_id: str = Field(index=True)        # O ID da instância do processo (seu alvo principal)
-    activity_name: str                      # O nome da atividade/etapa (ex: 'MonitorProcess')
-    timestamp: datetime = Field(default_factory=datetime.utcnow) # Quando o evento foi registrado
-    payload_data: Optional[str] = None      # Dados variáveis (pode ser JSON ou uma string longa)
+    # TIMESTAMP DINÂMICO: O Python/SQLModel cria o timestamp no momento da inserção
+    timestamp: datetime = Field(default_factory=datetime.utcnow, nullable=False)
+    
+  
+    # Metadados de Workflow Customizados (Extraídos do Payload Groovy)
+    currentTaskName: str
+    subjectName: Optional[str] = None
+    subjectId: Optional[str] = None
+    instanceId: Optional[str] = None
+    senderUserName: Optional[str] = None
+    senderUserId: Optional[str] = None
+    currentGroupName: Optional[str] = None
+    currentGroupId: Optional[str] = None
+    
+    # Dados brutos de todas as variáveis, caso necessário para mineração
+    # Nota: Usamos str para JSON, que será armazenado como TEXT/VARCHAR no SQL
+ 
 
-# 2. Definição do Schema de Entrada (o objeto que a API POST espera)
-# Geralmente é um subconjunto do modelo principal
+
+# Define o schema de entrada da API (o que o Camunda envia)
+# Não incluímos 'id' nem 'timestamp' aqui, pois são gerados no backend.
 class ProcessEventCreate(SQLModel):
-    case_id: str
-    activity_name: str
-    payload_data: Optional[str] = None
+    # Adicionamos case_id e activity_name para validação (são as chaves primárias do log)
+    
+    # Todos os seus campos customizados que vêm no 'body' do Groovy
+    currentTaskName: str
+    subjectName: Optional[str] = None
+    subjectId: Optional[str] = None
+    instanceId: Optional[str] = None
+    senderUserName: Optional[str] = None
+    senderUserId: Optional[str] = None
+    currentGroupName: Optional[str] = None
+    currentGroupId: Optional[str] = None
+
+    # Campo que você pode usar para salvar todas as outras variáveis (opcional)
+  
+
+
