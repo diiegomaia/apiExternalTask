@@ -1,0 +1,6 @@
+# Ignorar ambientes virtuais
+.venv/
+venv/
+
+# Ignorar arquivos de credenciais e variáveis de ambiente
+.env
