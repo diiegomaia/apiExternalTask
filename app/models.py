@@ -1,7 +1,8 @@
 from typing import Optional
 from sqlmodel import Field, SQLModel
 # Importar datetime é essencial para o timestamp
-from datetime import datetime
+from datetime import datetime, timedelta
+
 
 # Define o schema da tabela no PostgreSQL
 class ProcessEvent(SQLModel, table=True):
@@ -9,7 +10,10 @@ class ProcessEvent(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     
     # TIMESTAMP DINÂMICO: O Python/SQLModel cria o timestamp no momento da inserção
-    timestamp: datetime = Field(default_factory=datetime.utcnow, nullable=False)
+    def brazil_time():
+        return datetime.utcnow() - timedelta(hours=3)
+
+    timestamp: datetime = Field(default_factory=brazil_time, nullable=False)
     
   
     # Metadados de Workflow Customizados (Extraídos do Payload Groovy)
@@ -27,7 +31,11 @@ class ProcessEvent(SQLModel, table=True):
  
 class ProcessEventHomolog(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    timestamp: datetime = Field(default_factory=datetime.utcnow, nullable=False)
+    # TIMESTAMP DINÂMICO: O Python/SQLModel cria o timestamp no momento da inserção
+    def brazil_time():
+        return datetime.utcnow() - timedelta(hours=3)
+
+    timestamp: datetime = Field(default_factory=brazil_time, nullable=False)
 
     currentTaskName: str
     subjectName: Optional[str] = None
