@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlmodel import Session
 from .database import get_session
-from .models import ProcessEvent, ProcessEventCreate
+from .models import ProcessEvent, ProcessEventHomolog, ProcessEventCreate
 
 router = APIRouter()
 
@@ -15,10 +15,11 @@ def create_process_event(
     Recebe um objeto de evento (via POST) com metadados de workflow, 
     o salva no PostgreSQL e retorna o objeto salvo.
     """
-    # 1. Converte o objeto de entrada (Pydantic) para o objeto do banco (SQLModel)
-    # Isso funciona porque as chaves em ProcessEventCreate correspondem
-    # às chaves em ProcessEvent (exceto id e timestamp, que são automáticos).
-    db_event = ProcessEvent.model_validate(event)
+# Escolhe a tabela com base no 'production'
+    if event.production:
+        db_event = ProcessEvent.model_validate(event.model_dump(exclude={"production"}))
+    else:
+        db_event = ProcessEventHomolog.model_validate(event.model_dump(exclude={"production"}))
     
     # 2. Adiciona à sessão e salva no banco
     session.add(db_event)

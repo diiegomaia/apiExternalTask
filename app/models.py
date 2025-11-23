@@ -25,14 +25,25 @@ class ProcessEvent(SQLModel, table=True):
     # Dados brutos de todas as variáveis, caso necessário para mineração
     # Nota: Usamos str para JSON, que será armazenado como TEXT/VARCHAR no SQL
  
+class ProcessEventHomolog(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    timestamp: datetime = Field(default_factory=datetime.utcnow, nullable=False)
+
+    currentTaskName: str
+    subjectName: Optional[str] = None
+    subjectId: Optional[str] = None
+    instanceId: Optional[str] = None
+    senderUserName: Optional[str] = None
+    senderUserId: Optional[str] = None
+    currentGroupName: Optional[str] = None
+    currentGroupId: Optional[str] = None
 
 
 # Define o schema de entrada da API (o que o Camunda envia)
 # Não incluímos 'id' nem 'timestamp' aqui, pois são gerados no backend.
 class ProcessEventCreate(SQLModel):
-    # Adicionamos case_id e activity_name para validação (são as chaves primárias do log)
-    
     # Todos os seus campos customizados que vêm no 'body' do Groovy
+    production: bool = True
     currentTaskName: str
     subjectName: Optional[str] = None
     subjectId: Optional[str] = None
