@@ -3,7 +3,7 @@ from sqlmodel import create_engine, SQLModel
 import os
 from dotenv import load_dotenv
 from sqlmodel import Session
-from .models import ProcessEvent
+from .models import *
 
 load_dotenv() # Carrega as variáveis do arquivo .env
 
