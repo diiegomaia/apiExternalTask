@@ -5,22 +5,7 @@ from .models import ProcessEvent, ProcessEventHomolog, ProcessEventCreate, Feedb
 
 router = APIRouter()
 
-# script do cors
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
-
-# ADICIONE ISSO ANTES DAS ROTAS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # CUIDADO: só para teste
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-#Fim do script cors
 
 
 # O endpoint POST deve agora receber a nova estrutura ProcessEventCreate
