@@ -84,7 +84,7 @@ def verificar_feedback(
     # Buscar feedbacks do usuário nos últimos 30 dias
     statement = select(Feedback).where(
         Feedback.user_id == user_id,
-        Feedback.created_at >= data_limite
+        Feedback.timestamp >= data_limite  # ← MUDAR created_at para timestamp
     )
     
     resultado = session.exec(statement).first()
