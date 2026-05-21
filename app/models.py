@@ -50,7 +50,6 @@ class ProcessEventHomolog(SQLModel, table=True):
 # Define o schema de entrada da API (o que o Camunda envia)
 # Não incluímos 'id' nem 'timestamp' aqui, pois são gerados no backend.
 class ProcessEventCreate(SQLModel):
-    # Todos os seus campos customizados que vêm no 'body' do Groovy
     production: bool = True
     currentTaskName: str
     subjectName: Optional[str] = None
@@ -60,6 +59,7 @@ class ProcessEventCreate(SQLModel):
     senderUserId: Optional[str] = None
     currentGroupName: Optional[str] = None
     currentGroupId: Optional[str] = None
+    timestamp: Optional[datetime] = None  # ← novo campo opcional
 
     # Campo que você pode usar para salvar todas as outras variáveis (opcional)
   
